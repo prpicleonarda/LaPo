@@ -6,7 +6,28 @@
     <title>View Orders</title>
 </head>
 <body>
-    <h1>All Orders</h1> 
-    <!-- ADD THE ALL ORDERS FUNCTION -->
-</body>    
+    <h1>Flowers</h1>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Color</th>
+            <th>Price</th>
+            <th>Image</th>
+        </tr>
+        {% for flower in flowers %}
+        <tr>
+            <td>{{ flower.name }}</td>
+            <td>{{ flower.color }}</td>
+            <td>{{ flower.price }}</td>
+            <td>
+                {% if flower.image_link %}
+                    <img src="{{ flower.image_link }}" alt="{{ flower.name }}" width="100">
+                {% else %}
+                    No Image
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
 </html>
