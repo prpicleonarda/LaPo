@@ -21,7 +21,7 @@
             <td>{{ flower.price }}</td>
             <td>
                 {% if flower.image_link %}
-                    <img src="{{ flower.image_link }}" alt="{{ flower.name }}" width="100">
+                    <img src="/assets/{{ flower.image_link }}.jpg" alt="{{ flower.name }}" width="100">
                 {% else %}
                     No Image
                 {% endif %}
@@ -29,5 +29,39 @@
         </tr>
         {% endfor %}
     </table>
+    <a href="{{ url_for('main.add_flower') }}">Add a New Flower</a>
+    <br>
+    <hr>
+    <br>
+    <h1>All Orders</h1>
+    <ul>
+        {% for order in orders %}
+            <li>
+                <strong>Order ID:</strong> {{ order.id }}<br>
+                <strong>Email:</strong> {{ order.email }}<br>
+                <strong>Phone Number:</strong> {{ order.phone_number }}<br>
+                <strong>Type:</strong> {{ order.type }}<br>
+                <strong>Delivery:</strong> {{ 'Yes' if order.delivery else 'No' }}<br>
+                <strong>Greenery:</strong> {{ 'Yes' if order.greenery else 'No' }}<br>
+                <strong>Tape:</strong> {{ 'Yes' if order.tape else 'No' }}<br>
+                <strong>Paper:</strong> {{ 'Yes' if order.paper else 'No' }}<br>
+                <strong>Message:</strong> {{ order.message }}<br>
+                <strong>Address:</strong> {{ order.address }}<br>
+                <strong>Time:</strong> {{ order.time }}<br>
+                <strong>GDPR Consent:</strong> {{ 'Yes' if order.gdrp else 'No' }}<br>
+                <strong>Flowers:</strong>
+                <ul>
+                    {% for order_flower in order.flower_ids %}
+                        <li>{{ order_flower.flower.name }} ({{ order_flower.flower.color }}) - {{ order_flower.quantity }} units</li>
+                    {% else %}
+                        <li>No flowers in this order.</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% else %}
+            <li>No orders found.</li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('main.add_order') }}">Add a New Order</a>
 </body>
 </html>

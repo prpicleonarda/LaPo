@@ -8,8 +8,8 @@ class Flower(db.Entity):
     color = Required(str)
     price = Required(float)
     image_link = Optional(str) 
-    orders = Set('OrderFlower')
-
+    amount = Required(int)
+    orders = Set('OrderFlower') 
 
 class Order(db.Entity):
     email = Required(str)

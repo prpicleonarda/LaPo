@@ -4,9 +4,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Order</title>
+    <script>
+        function addFlowerField() {
+            const flowerContainer = document.getElementById('flower-container');
+ 
+            const template = document.getElementById('flower-template').content.cloneNode(true);
+ 
+            const flowerSelect = template.querySelector('select[name="flower_id[]"]');
+            flowerSelect.addEventListener('change', updateFlowerSelection);
+ 
+            const removeButton = template.querySelector('.remove-button');
+            removeButton.addEventListener('click', function() {
+                flowerSelect.removeEventListener('change', updateFlowerSelection);
+                this.parentElement.remove();
+                updateFlowerSelection();  
+            }); 
+            flowerContainer.appendChild(template);
+
+            updateFlowerSelection(); 
+        }
+
+        function updateFlowerSelection() {
+            const allSelects = document.querySelectorAll('select[name="flower_id[]"]');
+            const selectedValues = Array.from(allSelects).map(select => select.value);
+
+            allSelects.forEach(select => {
+                Array.from(select.options).forEach(option => {
+                    if (option.value === '') return;  
+                    option.disabled = selectedValues.includes(option.value) && option.value !== select.value;
+                });
+            });
+        }
+    </script>
 </head>
 <body>
-    <h1>Add a New Order</h1>
-    <!-- ADD NEW ORDERS -->
+    <h1>Add a New Order</h1> 
+    <form action="{{ url_for('main.add_order') }}" method="post">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <br>
+        <label for="phone_number">Phone Number:</label>
+        <input type="text" id="phone_number" name="phone_number" required>
+        <br>
+        <label for="type">Order Type:</label>
+        <input type="text" id="type" name="type" required>
+        <br>
+        <label for="delivery">Delivery:</label>
+        <input type="checkbox" id="delivery" name="delivery">
+        <br>
+        <label for="greenery">Greenery:</label>
+        <input type="checkbox" id="greenery" name="greenery">
+        <br>
+        <label for="tape">Tape:</label>
+        <input type="checkbox" id="tape" name="tape">
+        <br>
+        <label for="paper">Paper:</label>
+        <input type="checkbox" id="paper" name="paper">
+        <br>
+        <label for="message">Message:</label>
+        <textarea id="message" name="message"></textarea>
+        <br>
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" required>
+        <br>
+        <label for="time">Time:</label>
+        <input type="text" id="time" name="time" required>
+        <br>
+        <label for="gdrp">GDPR Consent:</label>
+        <input type="checkbox" id="gdrp" name="gdrp">
+        <br>
+        <label for="flowers">Flowers:</label>
+        <div id="flower-container">
+            {% for flower_id, quantity in selected_flowers %}
+            <div class="flower-selection">
+                <select name="flower_id[]" required onchange="updateFlowerSelection()">
+                    <option value="" disabled>Choose flower</option>
+                    {% for flower in flowers %}
+                    <option value="{{ flower.id }}" {% if flower.id == flower_id %}selected{% endif %}>
+                        {{ flower.name }} ({{ flower.color }})
+                    </option>
+                    {% endfor %}
+                </select>
+                <input type="number" name="flower_quantity[]" min="1" value="{{ quantity }}" required>
+                <button type="button" class="remove-button" onclick="this.parentElement.remove(); updateFlowerSelection();">Remove</button>
+            </div>
+            {% endfor %}
+        </div>
+
+        <button type="button" onclick="addFlowerField()">Add Flower</button>
+        <br><br>
+        <button type="submit" name="action" value="submit_order">Add Order</button>
+    </form>
+    <br>
+    <a href="{{ url_for('main.view_orders') }}">Back to Orders List</a>
+ 
+    <template id="flower-template">
+        <div class="flower-selection">
+            <select name="flower_id[]" required>
+                <option value="" disabled selected>Choose flower</option>
+                {% for flower in flowers %}
+                <option value="{{ flower.id }}">
+                    {{ flower.name }} ({{ flower.color }})
+                </option>
+                {% endfor %}
+            </select>
+            <input type="number" name="flower_quantity[]" min="1" value="1" required>
+            <button type="button" class="remove-button">Remove</button>
+        </div>
+    </template>
 </body>
 </html>
