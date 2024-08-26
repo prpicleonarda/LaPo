@@ -4,6 +4,11 @@ from models import Flower, Order, OrderFlower
 
 bp = Blueprint('main', __name__)
 
+@bp.route('/')
+@db_session
+def index():
+    return render_template('index.html')
+
 @bp.route('/flowers/add', methods=['GET', 'POST'])
 @db_session
 def add_flower():
@@ -15,15 +20,10 @@ def add_flower():
         image_link = request.form.get('image_link')
 
         Flower(name=name, color=color, price=price, amount=amount, image_link=image_link)
-        return redirect(url_for('main.view_flowers'))
+        return redirect(url_for('main.view_orders'))
     return render_template('add_flower.html')
 
-
-@bp.route('/flowers')
-@db_session
-def view_flowers():
-    flowers = Flower.select()[:]
-    return render_template('view_flowers.html', flowers=flowers)
+ 
 
 
 @bp.route('/flowers/edit/<int:id>', methods=['GET', 'POST'])
@@ -39,7 +39,7 @@ def edit_flower(id):
         flower.price = float(request.form['price'])
         flower.amount = int(request.form['amount'])
         flower.image_link = request.form.get('image_link')
-        return redirect(url_for('main.view_flowers'))
+        return redirect(url_for('main.view_orders'))
 
     return render_template('edit_flower.html', flower=flower)
 
@@ -52,14 +52,15 @@ def delete_flower(id):
         return "Flower not found", 404
 
     flower.delete()
-    return redirect(url_for('main.view_flowers'))
+    return redirect(url_for('main.view_orders'))
 
 
 @bp.route('/view_orders')
 @db_session
-def view_orders():
+def view_orders_and_flowers():
+    flowers = Flower.select()
     orders = Order.select()
-    return render_template('view_orders.html', orders=orders)
+    return render_template('view_orders.html', orders=orders, flowers=flowers)
 
 
 @bp.route('/orders/new', methods=['GET', 'POST'])
