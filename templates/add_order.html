@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Order</title>
+    <link href="{{ url_for('static', filename='dist/tailwind.css') }}" rel="stylesheet">
     <script>
         function addFlowerField() {
             const flowerContainer = document.getElementById('flower-container');
- 
             const template = document.getElementById('flower-template').content.cloneNode(true);
- 
+
             const flowerSelect = template.querySelector('select[name="flower_id[]"]');
             flowerSelect.addEventListener('change', updateFlowerSelection);
- 
+
             const removeButton = template.querySelector('.remove-button');
             removeButton.addEventListener('click', function() {
                 flowerSelect.removeEventListener('change', updateFlowerSelection);
@@ -20,7 +20,6 @@
                 updateFlowerSelection();  
             }); 
             flowerContainer.appendChild(template);
-
             updateFlowerSelection(); 
         }
 
@@ -37,70 +36,134 @@
         }
     </script>
 </head>
-<body>
-    <h1>Add a New Order</h1> 
-    <form action="{{ url_for('main.add_order') }}" method="post">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        <br>
-        <label for="phone_number">Phone Number:</label>
-        <input type="text" id="phone_number" name="phone_number" required>
-        <br>
-        <label for="type">Order Type:</label>
-        <input type="text" id="type" name="type" required>
-        <br>
-        <label for="delivery">Delivery:</label>
-        <input type="checkbox" id="delivery" name="delivery">
-        <br>
-        <label for="greenery">Greenery:</label>
-        <input type="checkbox" id="greenery" name="greenery">
-        <br>
-        <label for="tape">Tape:</label>
-        <input type="checkbox" id="tape" name="tape">
-        <br>
-        <label for="paper">Paper:</label>
-        <input type="checkbox" id="paper" name="paper">
-        <br>
-        <label for="message">Message:</label>
-        <textarea id="message" name="message"></textarea>
-        <br>
-        <label for="address">Address:</label>
-        <input type="text" id="address" name="address" required>
-        <br>
-        <label for="time">Time:</label>
-        <input type="text" id="time" name="time" required>
-        <br>
-        <label for="gdrp">GDPR Consent:</label>
-        <input type="checkbox" id="gdrp" name="gdrp">
-        <br>
-        <label for="flowers">Flowers:</label>
-        <div id="flower-container">
-            {% for flower_id, quantity in selected_flowers %}
-            <div class="flower-selection">
-                <select name="flower_id[]" required onchange="updateFlowerSelection()">
-                    <option value="" disabled>Choose flower</option>
-                    {% for flower in flowers %}
-                    <option value="{{ flower.id }}" {% if flower.id == flower_id %}selected{% endif %}>
-                        {{ flower.name }} ({{ flower.color }})
-                    </option>
-                    {% endfor %}
-                </select>
-                <input type="number" name="flower_quantity[]" min="1" value="{{ quantity }}" required>
-                <button type="button" class="remove-button" onclick="this.parentElement.remove(); updateFlowerSelection();">Remove</button>
-            </div>
-            {% endfor %}
-        </div>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-        <button type="button" onclick="addFlowerField()">Add Flower</button>
-        <br><br>
-        <button type="submit" name="action" value="submit_order">Add Order</button>
-    </form>
-    <br>
-    <a href="{{ url_for('main.view_orders') }}">Back to Orders List</a>
- 
+    <div class="bg-white shadow-lg rounded-lg p-8 max-w-2xl w-full">
+        <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Add a New Order</h1>
+        
+        <form action="{{ url_for('main.add_order') }}" method="post" class="space-y-4">
+            
+            <!-- Email Field -->
+            <div>
+                <label for="email" class="block text-gray-700 font-medium">Email</label>
+                <input type="email" id="email" name="email" required 
+                       class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+            
+            <!-- Phone Number Field -->
+            <div>
+                <label for="phone_number" class="block text-gray-700 font-medium">Phone Number</label>
+                <input type="text" id="phone_number" name="phone_number" required 
+                       class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+
+            <!-- Order Type Field -->
+            <div>
+                <label for="type" class="block text-gray-700 font-medium">Order Type</label>
+                <input type="text" id="type" name="type" required 
+                       class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+
+            <!-- Delivery Checkbox -->
+            <div class="flex items-center">
+                <input type="checkbox" id="delivery" name="delivery" 
+                       class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400">
+                <label for="delivery" class="ml-2 block text-gray-700">Delivery</label>
+            </div>
+
+            <!-- Greenery Checkbox -->
+            <div class="flex items-center">
+                <input type="checkbox" id="greenery" name="greenery" 
+                       class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400">
+                <label for="greenery" class="ml-2 block text-gray-700">Greenery</label>
+            </div>
+
+            <!-- Tape Checkbox -->
+            <div class="flex items-center">
+                <input type="checkbox" id="tape" name="tape" 
+                       class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400">
+                <label for="tape" class="ml-2 block text-gray-700">Tape</label>
+            </div>
+
+            <!-- Paper Checkbox -->
+            <div class="flex items-center">
+                <input type="checkbox" id="paper" name="paper" 
+                       class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400">
+                <label for="paper" class="ml-2 block text-gray-700">Paper</label>
+            </div>
+
+            <!-- Message Field -->
+            <div>
+                <label for="message" class="block text-gray-700 font-medium">Message</label>
+                <textarea id="message" name="message" 
+                          class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+            </div>
+
+            <!-- Address Field -->
+            <div>
+                <label for="address" class="block text-gray-700 font-medium">Address</label>
+                <input type="text" id="address" name="address" required 
+                       class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+
+            <!-- Time Field -->
+            <div>
+                <label for="time" class="block text-gray-700 font-medium">Time</label>
+                <input type="text" id="time" name="time" required 
+                       class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+
+            <!-- GDPR Consent Checkbox -->
+            <div class="flex items-center">
+                <input type="checkbox" id="gdrp" name="gdrp" 
+                       class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400">
+                <label for="gdrp" class="ml-2 block text-gray-700">GDPR Consent</label>
+            </div>
+
+            <!-- Flowers Selection -->
+            <div>
+                <label for="flowers" class="block text-gray-700 font-medium">Flowers</label>
+                <div id="flower-container" class="space-y-2">
+                    {% for flower_id, quantity in selected_flowers %}
+                    <div class="flex items-center space-x-2 flower-selection">
+                        <select name="flower_id[]" required onchange="updateFlowerSelection()" 
+                                class="block w-3/4 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <option value="" disabled>Choose flower</option>
+                            {% for flower in flowers %}
+                            <option value="{{ flower.id }}" {% if flower.id == flower_id %}selected{% endif %}>
+                                {{ flower.name }} ({{ flower.color }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <input type="number" name="flower_quantity[]" min="1" value="{{ quantity }}" required 
+                               class="block w-1/4 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        <button type="button" class="remove-button text-red-500 hover:text-red-700 focus:outline-none">Remove</button>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="button" onclick="addFlowerField()" 
+                        class="mt-4 text-blue-500 hover:text-blue-700 focus:outline-none">Add Flower</button>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" name="action" value="submit_order" 
+                        class="mt-6 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    Add Order
+                </button>
+            </div>
+        </form>
+
+        <div class="mt-6 text-center">
+            <a href="{{ url_for('main.view_orders') }}" 
+               class="text-blue-500 hover:text-blue-700 focus:outline-none">Back to Orders List</a>
+        </div>
+    </div>
+
     <template id="flower-template">
-        <div class="flower-selection">
-            <select name="flower_id[]" required>
+        <div class="flex items-center space-x-2 flower-selection">
+            <select name="flower_id[]" required 
+                    class="block w-3/4 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
                 <option value="" disabled selected>Choose flower</option>
                 {% for flower in flowers %}
                 <option value="{{ flower.id }}">
@@ -108,8 +171,9 @@
                 </option>
                 {% endfor %}
             </select>
-            <input type="number" name="flower_quantity[]" min="1" value="1" required>
-            <button type="button" class="remove-button">Remove</button>
+            <input type="number" name="flower_quantity[]" min="1" value="1" required 
+                   class="block w-1/4 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <button type="button" class="remove-button text-red-500 hover:text-red-700 focus:outline-none">Remove</button>
         </div>
     </template>
 </body>

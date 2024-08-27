@@ -3,27 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Flower</title>
+    <title>Add New Flower</title>
+    <link href="{{ url_for('static', filename='dist/tailwind.css') }}" rel="stylesheet">
 </head>
-<body>
-    <h1>Add New Flower</h1>
-    <form action="{{ url_for('main.add_flower') }}" method="POST">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br><br>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-        <label for="color">Color:</label>
-        <input type="text" id="color" name="color" required><br><br>
+    <div class="bg-white shadow-md rounded-lg p-8 max-w-lg w-full">
+        <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Add New Flower</h1>
+        
+        <form action="{{ url_for('main.add_flower') }}" method="POST" class="space-y-4">
+            
+            <!-- Name Field -->
+            <div>
+                <label for="name" class="block text-gray-700 font-medium">Flower Name</label>
+                <input type="text" id="name" name="name" required 
+                       class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+            
+            <!-- Color Field -->
+            <div>
+                <label for="color" class="block text-gray-700 font-medium">Flower Color</label>
+                <input type="text" id="color" name="color" required 
+                       class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+            
+            <!-- Price Field -->
+            <div>
+                <label for="price" class="block text-gray-700 font-medium">Price</label>
+                <input type="text" id="price" name="price" required 
+                       class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+            
+            <!-- Amount Field -->
+            <div>
+                <label for="amount" class="block text-gray-700 font-medium">Amount</label>
+                <input type="number" id="amount" name="amount" 
+                       class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+            
+            <!-- Image Link Field -->
+            <div>
+                <label for="image_link" class="block text-gray-700 font-medium">Image Link</label>
+                <input type="text" id="image_link" name="image_link" 
+                       class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" 
+                        class="mt-6 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    Add Flower
+                </button>
+            </div>
+        </form>
+    </div>
 
-        <label for="price">Price:</label>
-        <input type="text" id="price" name="price" required><br><br>
- 
-        <label for="amount">Amount</label>
-        <input type="text" id="amount" name="amount"><br><br>
-
-        <label for="image_link">Image Link:</label>
-        <input type="text" id="image_link" name="image_link"><br><br>
-
-        <button type="submit">Add Flower</button>
-    </form>
 </body>
 </html>

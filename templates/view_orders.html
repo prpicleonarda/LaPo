@@ -3,66 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Orders</title>
+    <title>Dashboard</title>
+    <link href="{{ url_for('static', filename='dist/tailwind.css') }}" rel="stylesheet">
 </head>
-<body>
-    <h1>Flowers</h1>
-    <table>
-        <tr>
-            <th>Name</th>
-            <th>Color</th>
-            <th>Price</th>
-            <th>Image</th>
-        </tr>
-        {% for flower in flowers %}
-        <tr>
-            <td>{{ flower.name }}</td>
-            <td>{{ flower.color }}</td>
-            <td>{{ flower.price }}</td>
-            <td>{{ flower.amount}}</td>
-            <td>
-                {% if flower.image_link %}
-                    <img src="/assets/{{ flower.image_link }}.jpg" alt="{{ flower.name }}" width="100">
-                {% else %}
-                    No Image
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-    <a href="{{ url_for('main.add_flower') }}">Add a New Flower</a>
-    <br>
-    <hr>
-    <br>
-    <h1>All Orders</h1>
-    <ul>
-        {% for order in orders %}
-            <li>
-                <strong>Order ID:</strong> {{ order.id }}<br>
-                <strong>Email:</strong> {{ order.email }}<br>
-                <strong>Phone Number:</strong> {{ order.phone_number }}<br>
-                <strong>Type:</strong> {{ order.type }}<br>
-                <strong>Delivery:</strong> {{ 'Yes' if order.delivery else 'No' }}<br>
-                <strong>Greenery:</strong> {{ 'Yes' if order.greenery else 'No' }}<br>
-                <strong>Tape:</strong> {{ 'Yes' if order.tape else 'No' }}<br>
-                <strong>Paper:</strong> {{ 'Yes' if order.paper else 'No' }}<br>
-                <strong>Message:</strong> {{ order.message }}<br>
-                <strong>Address:</strong> {{ order.address }}<br>
-                <strong>Time:</strong> {{ order.time }}<br>
-                <strong>GDPR Consent:</strong> {{ 'Yes' if order.gdrp else 'No' }}<br>
-                <strong>Flowers:</strong>
-                <ul>
+<body class="bg-gray-100 p-6">
+
+    <div class="max-w-7xl mx-auto bg-white p-8 shadow-lg rounded-lg">
+        
+        <!-- Flowers Table -->
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Flowers Dashboard</h1>
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-600 text-left">
+                        <th class="py-3 px-4">Name</th>
+                        <th class="py-3 px-4">Color</th>
+                        <th class="py-3 px-4">Price</th>
+                        <th class="py-3 px-4">Amount</th>
+                        <th class="py-3 px-4">Image</th>
+                        <th class="py-3 px-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for flower in flowers %}
+                    <tr class="border-b border-gray-200">
+                        <td class="py-3 px-4">{{ flower.name }}</td>
+                        <td class="py-3 px-4">{{ flower.color }}</td>
+                        <td class="py-3 px-4">{{ flower.price }}</td>
+                        <td class="py-3 px-4">{{ flower.amount }}</td>
+                        <td class="py-3 px-4">
+                            {% if flower.image_link %}
+                                <img src="/assets/{{ flower.image_link }}.jpg" alt="{{ flower.name }}" class="w-24 h-24 object-cover">
+                            {% else %}
+                                <span class="text-gray-500">No Image</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-4">
+                            <a href="{{ url_for('main.edit_flower', flower_id=flower.id) }}" class="text-blue-500 hover:text-blue-700">Edit</a>
+                            <form action="{{ url_for('main.delete_flower', flower_id=flower.id) }}" method="POST" class="inline-block">
+                                <button type="submit" class="text-red-500 hover:text-red-700 ml-4">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-4">
+            <a href="{{ url_for('main.add_flower') }}" class="text-blue-500 hover:text-blue-700">Add a New Flower</a>
+        </div>
+
+        <hr class="my-8">
+
+        <!-- Orders List -->
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">All Orders</h1>
+        <ul class="space-y-6">
+            {% for order in orders %}
+            <li class="p-4 bg-gray-50 rounded-lg shadow-sm">
+                <p><strong>Order ID:</strong> {{ order.id }}</p>
+                <p><strong>Email:</strong> {{ order.email }}</p>
+                <p><strong>Phone Number:</strong> {{ order.phone_number }}</p>
+                <p><strong>Type:</strong> {{ order.type }}</p>
+                <p><strong>Delivery:</strong> {{ 'Yes' if order.delivery else 'No' }}</p>
+                <p><strong>Greenery:</strong> {{ 'Yes' if order.greenery else 'No' }}</p>
+                <p><strong>Tape:</strong> {{ 'Yes' if order.tape else 'No' }}</p>
+                <p><strong>Paper:</strong> {{ 'Yes' if order.paper else 'No' }}</p>
+                <p><strong>Message:</strong> {{ order.message }}</p>
+                <p><strong>Address:</strong> {{ order.address }}</p>
+                <p><strong>Time:</strong> {{ order.time }}</p>
+                <p><strong>GDPR Consent:</strong> {{ 'Yes' if order.gdrp else 'No' }}</p>
+                <p><strong>Flowers:</strong></p>
+                <ul class="ml-6 list-disc list-inside">
                     {% for order_flower in order.flower_ids %}
                         <li>{{ order_flower.flower.name }} ({{ order_flower.flower.color }}) - {{ order_flower.quantity }} units</li>
                     {% else %}
-                        <li>No flowers in this order.</li>
+                        <li class="text-gray-500">No flowers in this order.</li>
                     {% endfor %}
                 </ul>
             </li>
-        {% else %}
-            <li>No orders found.</li>
-        {% endfor %}
-    </ul>
-    <a href="{{ url_for('main.add_order') }}">Add a New Order</a>
+            {% else %}
+            <li class="text-gray-500">No orders found.</li>
+            {% endfor %}
+        </ul>
+        <div class="mt-8">
+            <a href="{{ url_for('main.add_order') }}" class="text-blue-500 hover:text-blue-700">Add a New Order</a>
+        </div>
+    </div>
+
 </body>
 </html>
