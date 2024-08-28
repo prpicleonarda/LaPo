@@ -122,17 +122,31 @@ def add_order():
                 for flower_id, quantity in zip(flower_ids, flower_quantities):
                     if flower_id and quantity:
                         flower = Flower.get(id=int(flower_id))
-                        if flower and flower.amount >= int(quantity):
-                            OrderFlower(order=order, flower=flower, quantity=int(quantity))
-                            flower.amount -= int(quantity)
+                        if flower:
+                            quantity = int(quantity)
+                            if flower.amount >= quantity:
+                                OrderFlower(order=order, flower=flower, quantity=quantity)
+                                flower.amount -= quantity
+                            else:
+                                # Pass the error message to the template
+                                error_message = f"Please reduce the quantity. There are only {flower.amount} {flower.name}(s) left."
+                                flowers = Flower.select()
+                                selected_flowers = list(zip(flower_ids, flower_quantities))
+                                return render_template('add_order.html', flowers=flowers, selected_flowers=selected_flowers, error_message=error_message)
                         else:
-                            return "Invalid flower ID or quantity exceeds available amount.", 400
+                            error_message = "Invalid flower ID."
+                            flowers = Flower.select()
+                            selected_flowers = list(zip(flower_ids, flower_quantities))
+                            return render_template('add_order.html', flowers=flowers, selected_flowers=selected_flowers, error_message=error_message)
 
                 return redirect('/view_orders')
 
             except Exception as e:
                 print(f"An error occurred: {e}")
-                return "An error occurred while processing the order.", 500
+                error_message = "An error occurred while processing the order."
+                flowers = Flower.select()
+                selected_flowers = list(zip(flower_ids, flower_quantities))
+                return render_template('add_order.html', flowers=flowers, selected_flowers=selected_flowers, error_message=error_message)
 
     else:
         flowers = Flower.select()
