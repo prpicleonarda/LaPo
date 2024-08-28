@@ -3,9 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Flower</title>
-    <link href="{{ url_for('static', filename='dist/tailwind.css') }}" rel="stylesheet">
-    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <title>LAPO</title>
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"> 
+    <style>
+        /* Ensure the image is a square, centered, and responsive */
+        .flower-preview {
+            width: calc(100% - 30px);
+            height: auto;
+            max-width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 16px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const flowerTypeSelect = document.getElementById('flower_type');
+            const imageLinkInput = document.getElementById('image_link');
+            const flowerPreview = document.getElementById('flower_preview');
+            
+            const flowerImages = {
+                'Rose': '/static/assets/rose.jpg',
+                'Tulip': '/static/assets/tulip.jpg',
+                'Lily': '/static/assets/lily.jpg',
+                'Sunflower': '/static/assets/sunflower.jpg',
+                'Orchid': '/static/assets/orchid.jpg',
+                'Daisy': '/static/assets/daisy.jpg',
+                'Lavender': '/static/assets/lavender.jpg',
+                'Iris': '/static/assets/iris.jpg',
+                'Peony': '/static/assets/peony.jpg',
+                'Jasmine': '/static/assets/jasmine.jpg',
+                'Chrysanthemum': '/static/assets/chrysanthemum.jpg',
+                'Marigold': '/static/assets/marigold.jpg',
+                'Gardenia': '/static/assets/gardenia.jpg',
+                'Hibiscus': '/static/assets/hibiscus.jpg',
+                'Camellia': '/static/assets/camellia.jpg'
+            };
+
+            function updateFlowerPreview() {
+                const selectedFlower = flowerTypeSelect.value;
+                const imageLink = flowerImages[selectedFlower] || '';
+                imageLinkInput.value = imageLink;
+                flowerPreview.src = imageLink;
+                flowerPreview.style.display = imageLink ? 'block' : 'none'; // Show image if link is valid
+            }
+
+            flowerTypeSelect.addEventListener('change', updateFlowerPreview);
+
+            // Update the preview on page load if a flower type was preselected
+            updateFlowerPreview();
+        });
+    </script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
@@ -13,43 +66,53 @@
         <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Add New Flower</h1>
         
         <form action="{{ url_for('main.add_flower') }}" method="POST" class="space-y-4">
-            
-            <!-- Name Field -->
+             
             <div>
-                <label for="name" class="block text-gray-700 font-medium">Flower Name</label>
-                <input type="text" id="name" name="name" required 
-                       class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <label for="flower_type" class="block text-gray-700 font-medium">Flower Type</label>
+                <select id="flower_type" name="flower_type" required 
+                        class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    <option value="" disabled selected>Select a flower type</option>
+                    <option value="Rose">Rose</option>
+                    <option value="Tulip">Tulip</option>
+                    <option value="Lily">Lily</option>
+                    <option value="Sunflower">Sunflower</option>
+                    <option value="Orchid">Orchid</option>
+                    <option value="Daisy">Daisy</option>
+                    <option value="Lavender">Lavender</option>
+                    <option value="Iris">Iris</option>
+                    <option value="Peony">Peony</option>
+                    <option value="Jasmine">Jasmine</option>
+                    <option value="Chrysanthemum">Chrysanthemum</option>
+                    <option value="Marigold">Marigold</option>
+                    <option value="Gardenia">Gardenia</option>
+                    <option value="Hibiscus">Hibiscus</option>
+                    <option value="Camellia">Camellia</option>
+                </select>
             </div>
-            
-            <!-- Color Field -->
+             
             <div>
                 <label for="color" class="block text-gray-700 font-medium">Flower Color</label>
                 <input type="text" id="color" name="color" required 
                        class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
             </div>
-            
-            <!-- Price Field -->
+             
             <div>
                 <label for="price" class="block text-gray-700 font-medium">Price</label>
                 <input type="text" id="price" name="price" required 
                        class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
             </div>
-            
-            <!-- Amount Field -->
+             
             <div>
                 <label for="amount" class="block text-gray-700 font-medium">Amount</label>
                 <input type="number" id="amount" name="amount" 
                        class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
             </div>
+              
+            <input type="hidden" id="image_link" name="image_link" readonly>
             
-            <!-- Image Link Field -->
-            <div>
-                <label for="image_link" class="block text-gray-700 font-medium">Image Link</label>
-                <input type="text" id="image_link" name="image_link" 
-                       class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
-            </div>
+            <!-- Flower Preview Image -->
+            <img id="flower_preview" class="flower-preview" style="display: none;">
             
-            <!-- Submit Button -->
             <div class="text-center">
                 <button type="submit" 
                         class="mt-6 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
