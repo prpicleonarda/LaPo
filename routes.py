@@ -6,8 +6,9 @@ bp = Blueprint('main', __name__)
 
 @bp.route('/')
 @db_session
-def index():
-    return render_template('index.html')
+def index(): 
+    flowers = Flower.select()[:]
+    return render_template('index.html', flowers = flowers)
 
 @bp.route('/flowers/add', methods=['GET', 'POST'])
 @db_session
