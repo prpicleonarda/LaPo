@@ -1,96 +1,490 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LAPO DASHBOARD</title>
-    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"> 
-</head>
-<body class="bg-gray-100 p-6">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Orders</title>
+    <link
+      href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .bg-dark-green {
+        background-color: #134611;
+      }
+      .bg-light-green {
+        background-color: #629677;
+      }
+      .bg-beige {
+        background-color: #b09e99;
+      }
+      .bg-apricot {
+        background-color: #fad4c0;
+      }
+      .text-hover-glow:hover {
+        text-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+      }
+      .order-now-button {
+        position: relative;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem; /* Tailwind's rounded-md */
+        transition: background-color 0.3s ease, color 0.3s ease,
+          transform 0.3s ease;
+      }
+      .order-now-button:hover {
+        background-color: #6da34f; /* Light green background */
+        color: white;
+        transform: scale(1.05); /* Slightly scale up on hover */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Box shadow for hover effect */
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      .modal-content {
+        background-color: #fff;
+        margin: 15% auto;
+        padding: 20px;
+        border-radius: 5px;
+        width: 80%;
+        max-width: 500px;
+      }
+      .modal.open {
+        display: block;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 flex flex-col min-h-screen">
+    <nav class="bg-dark-green p-4 shadow-lg">
+      <div class="container mx-auto flex justify-between items-center">
+        <div class="text-white text-2xl font-bold"><a href="/">LAPO</a></div>
+        <div class="space-x-4">
+          <a
+            href="/"
+            class="text-white hover:text-gray-200 transition duration-300 ease-in-out text-hover-glow"
+            >Home</a
+          >
+          <a
+            href="/orders/new"
+            class="order-now-button text-white transition duration-300 ease-in-out text-base"
+            >Order Now</a
+          >
+          <a
+            href="/view_orders"
+            class="text-white hover:text-gray-200 transition duration-300 ease-in-out text-hover-glow"
+            >Dashboard</a
+          >
+        </div>
+      </div>
+    </nav>
 
-    <div class="max-w-7xl mx-auto bg-white p-8 shadow-lg rounded-lg">
-        
-        <!-- Flowers Table -->
+    <div class="flex-1 flex items-center justify-center">
+      <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-4xl">
         <h1 class="text-2xl font-bold text-gray-800 mb-6">Flowers Dashboard</h1>
+
+        <!-- Flower Table -->
         <div class="overflow-x-auto">
-            <table class="min-w-full bg-white border border-gray-300 rounded-lg">
-                <thead>
-                    <tr class="bg-gray-200 text-gray-600 text-left">
-                        <th class="py-3 px-4">Name</th>
-                        <th class="py-3 px-4">Color</th>
-                        <th class="py-3 px-4">Price</th>
-                        <th class="py-3 px-4">Amount</th>
-                        <th class="py-3 px-4">Image</th>
-                        <th class="py-3 px-4">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for flower in flowers %}
-                    <tr class="border-b border-gray-200">
-                        <td class="py-3 px-4">{{ flower.name }}</td>
-                        <td class="py-3 px-4">{{ flower.color }}</td>
-                        <td class="py-3 px-4">{{ flower.price }}</td>
-                        <td class="py-3 px-4">{{ flower.amount }}</td>
-                        <td class="py-3 px-4">
-                            {% if flower.image_link %}
-                                <img src="/assets/{{ flower.image_link }}.jpg" alt="{{ flower.name }}" class="w-24 h-24 object-cover">
-                            {% else %}
-                                <span class="text-gray-500">No Image</span>
-                            {% endif %}
-                        </td>
-                        <td class="py-3 px-4">
-                            <a href="{{ url_for('main.edit_flower', id=flower.id) }}" class="text-blue-500 hover:text-blue-700">Edit</a>
-
-                            <form action="{{ url_for('main.delete_flower', id=flower.id) }}" method="POST" class="inline-block">
-                                <button type="submit" class="text-red-500 hover:text-red-700 ml-4">Delete</button>
-                            </form>
-                            
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+          <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+            <thead>
+              <tr class="bg-gray-200 text-gray-600 text-left">
+                <th class="py-3 px-4">Name</th>
+                <th class="py-3 px-4">Color</th>
+                <th class="py-3 px-4">Price</th>
+                <th class="py-3 px-4">Amount</th>
+                <th class="py-3 px-4">Image</th>
+                <th class="py-3 px-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for flower in flowers %}
+              <tr class="border-b border-gray-200">
+                <td class="py-3 px-4">{{ flower.name }}</td>
+                <td class="py-3 px-4">{{ flower.color }}</td>
+                <td class="py-3 px-4">{{ flower.price }}</td>
+                <td class="py-3 px-4">{{ flower.amount }}</td>
+                <td class="py-3 px-4">
+                  {% if flower.image_link %}
+                  <img
+                    src="/assets/{{ flower.image_link }}.jpg"
+                    alt="{{ flower.name }}"
+                    class="w-24 h-24 object-cover"
+                  />
+                  {% else %}
+                  <span class="text-gray-500">No Image</span>
+                  {% endif %}
+                </td>
+                <td class="py-3 px-4">
+                  <button
+                    onclick="openModal('edit-flower-modal-{{ flower.id }}')"
+                    class="text-blue-500 hover:text-blue-700"
+                  >
+                    Edit
+                  </button>
+                  <form
+                    action="{{ url_for('main.delete_flower', id=flower.id) }}"
+                    method="POST"
+                    class="inline-block"
+                  >
+                    <button
+                      type="submit"
+                      class="text-red-500 hover:text-red-700"
+                    >
+                      Delete
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
-        <div class="mt-4">
-            <a href="{{ url_for('main.add_flower') }}" class="text-blue-500 hover:text-blue-700">Add a New Flower</a>
+
+        <!-- Add Flower Button -->
+        <div class="mt-6 text-center">
+          <a
+            href="/flowers/add"
+            class="bg-light-green text-white py-2 px-4 rounded hover:bg-green-600 transition duration-300 ease-in-out"
+            >Add Flower</a
+          >
         </div>
 
-        <hr class="my-8">
-
-        <!-- Orders List -->
-        <h1 class="text-2xl font-bold text-gray-800 mb-6">All Orders</h1>
-        <ul class="space-y-6">
-            {% for order in orders %}
-            <li class="p-4 bg-gray-50 rounded-lg shadow-sm">
-                <p><strong>Order ID:</strong> {{ order.id }}</p>
-                <p><strong>Email:</strong> {{ order.email }}</p>
-                <p><strong>Phone Number:</strong> {{ order.phone_number }}</p>
-                <p><strong>Type:</strong> {{ order.type }}</p>
-                <p><strong>Delivery:</strong> {{ 'Yes' if order.delivery else 'No' }}</p>
-                <p><strong>Greenery:</strong> {{ 'Yes' if order.greenery else 'No' }}</p>
-                <p><strong>Tape:</strong> {{ 'Yes' if order.tape else 'No' }}</p>
-                <p><strong>Paper:</strong> {{ 'Yes' if order.paper else 'No' }}</p>
-                <p><strong>Message:</strong> {{ order.message }}</p>
-                <p><strong>Address:</strong> {{ order.address }}</p>
-                <p><strong>Time:</strong> {{ order.time }}</p>
-                <p><strong>GDPR Consent:</strong> {{ 'Yes' if order.gdrp else 'No' }}</p>
-                <p><strong>Flowers:</strong></p>
-                <ul class="ml-6 list-disc list-inside">
-                    {% for order_flower in order.flower_ids %}
-                        <li>{{ order_flower.flower.name }} ({{ order_flower.flower.color }}) - {{ order_flower.quantity }} units</li>
-                    {% else %}
-                        <li class="text-gray-500">No flowers in this order.</li>
-                    {% endfor %}
-                </ul>
-            </li>
-            {% else %}
-            <li class="text-gray-500">No orders found.</li>
-            {% endfor %}
-        </ul>
-        <div class="mt-8">
-            <a href="{{ url_for('main.add_order') }}" class="text-blue-500 hover:text-blue-700">Add a New Order</a>
+        <!-- Order Table -->
+        <h2 class="text-xl font-bold text-gray-800 mt-10 mb-6">Orders</h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+            <thead>
+              <tr class="bg-gray-200 text-gray-600 text-left">
+                <th class="py-3 px-4">Order ID</th>
+                <th class="py-3 px-4">Email</th>
+                <th class="py-3 px-4">Phone</th>
+                <th class="py-3 px-4">Type</th>
+                <th class="py-3 px-4">Address</th>
+                <th class="py-3 px-4">Time</th>
+                <th class="py-3 px-4">Message</th>
+                <th class="py-3 px-4">Delivery</th>
+                <th class="py-3 px-4">Greenery</th>
+                <th class="py-3 px-4">Tape</th>
+                <th class="py-3 px-4">Paper</th>
+                <th class="py-3 px-4">GDPR</th>
+                <th class="py-3 px-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for order in orders %}
+              <tr class="border-b border-gray-200">
+                <td class="py-3 px-4 text-center">{{ order.id }}</td>
+                <td class="py-3 px-4">{{ order.email }}</td>
+                <td class="py-3 px-4">{{ order.phone_number }}</td>
+                <td class="py-3 px-4">{{ order.type }}</td>
+                <td class="py-3 px-4">{{ order.address }}</td>
+                <td class="py-3 px-4">{{ order.time }}</td>
+                <td class="py-3 px-4">{{ order.message }}</td>
+                <td class="py-3 px-4 text-center">
+                  {{ 'Yes' if order.delivery else 'No' }}
+                </td>
+                <td class="py-3 px-4 text-center">
+                  {{ 'Yes' if order.greenery else 'No' }}
+                </td>
+                <td class="py-3 px-4 text-center">
+                  {{ 'Yes' if order.tape else 'No' }}
+                </td>
+                <td class="py-3 px-4 text-center">
+                  {{ 'Yes' if order.paper else 'No' }}
+                </td>
+                <td class="py-3 px-4 text-center">
+                  {{ 'Yes' if order.gdrp else 'No' }}
+                </td>
+                <td class="py-3 px-4">
+                  <button
+                    onclick="openModal('edit-order-modal-{{ order.id }}')"
+                    class="text-blue-500 hover:text-blue-700"
+                  >
+                    Edit
+                  </button>
+                  <form
+                    action="{{ url_for('main.delete_order', id=order.id) }}"
+                    method="POST"
+                    class="inline-block"
+                  >
+                    <button
+                      type="submit"
+                      class="text-red-500 hover:text-red-700"
+                    >
+                      Delete
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
+
+        <!-- Add Order Button -->
+        <div class="mt-6 text-center">
+          <a
+            href="/orders/new"
+            class="bg-light-green text-white py-2 px-4 rounded hover:bg-green-600 transition duration-300 ease-in-out"
+            >Add Order</a
+          >
+        </div>
+      </div>
     </div>
 
-</body>
+    <!-- Edit Flower Modal -->
+    {% for flower in flowers %}
+    <div id="edit-flower-modal-{{ flower.id }}" class="modal">
+      <div class="modal-content">
+        <span
+          onclick="closeModal('edit-flower-modal-{{ flower.id }}')"
+          class="close"
+          >&times;</span
+        >
+        <h2>Edit Flower</h2>
+        <form
+          action="{{ url_for('main.edit_flower', id=flower.id) }}"
+          method="POST"
+        >
+          <label for="name">Name:</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value="{{ flower.name }}"
+            class="form-input mb-4"
+            required
+          />
+
+          <label for="color">Color:</label>
+          <input
+            type="text"
+            id="color"
+            name="color"
+            value="{{ flower.color }}"
+            class="form-input mb-4"
+            required
+          />
+
+          <label for="price">Price:</label>
+          <input
+            type="number"
+            step="0.01"
+            id="price"
+            name="price"
+            value="{{ flower.price }}"
+            class="form-input mb-4"
+            required
+          />
+
+          <label for="amount">Amount:</label>
+          <input
+            type="number"
+            id="amount"
+            name="amount"
+            value="{{ flower.amount }}"
+            class="form-input mb-4"
+            required
+          />
+
+          <label for="image_link">Image Link:</label>
+          <input
+            type="text"
+            id="image_link"
+            name="image_link"
+            value="{{ flower.image_link }}"
+            class="form-input mb-4"
+          />
+
+          <button
+            type="submit"
+            class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+          >
+            Save
+          </button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+
+    <!-- Edit Order Modal -->
+    {% for order in orders %}
+    <div id="edit-order-modal-{{ order.id }}" class="modal">
+      <div class="modal-content">
+        <span
+          onclick="closeModal('edit-order-modal-{{ order.id }}')"
+          class="close"
+          >&times;</span
+        >
+        <h2>Edit Order</h2>
+        <form
+          action="{{ url_for('main.edit_order', id=order.id) }}"
+          method="POST"
+        >
+          <label for="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value="{{ order.email }}"
+            class="form-input mb-4"
+            required
+          />
+
+          <label for="phone_number">Phone Number:</label>
+          <input
+            type="text"
+            id="phone_number"
+            name="phone_number"
+            value="{{ order.phone_number }}"
+            class="form-input mb-4"
+            required
+          />
+
+          <label for="type">Type:</label>
+          <input
+            type="text"
+            id="type"
+            name="type"
+            value="{{ order.type }}"
+            class="form-input mb-4"
+            required
+          />
+
+          <label for="address">Address:</label>
+          <input
+            type="text"
+            id="address"
+            name="address"
+            value="{{ order.address }}"
+            class="form-input mb-4"
+            required
+          />
+
+          <label for="time">Time:</label>
+          <input
+            type="text"
+            id="time"
+            name="time"
+            value="{{ order.time }}"
+            class="form-input mb-4"
+            required
+          />
+
+          <label for="message">Message:</label>
+          <textarea id="message" name="message" class="form-input mb-4">
+{{ order.message }}</textarea
+          >
+
+          <label for="delivery">Delivery:</label>
+          <input
+            type="checkbox"
+            id="delivery"
+            name="delivery"
+            {%
+            if
+            order.delivery
+            %}
+            checked
+            {%
+            endif
+            %}
+          />
+
+          <label for="greenery">Greenery:</label>
+          <input
+            type="checkbox"
+            id="greenery"
+            name="greenery"
+            {%
+            if
+            order.greenery
+            %}
+            checked
+            {%
+            endif
+            %}
+          />
+
+          <label for="tape">Tape:</label>
+          <input
+            type="checkbox"
+            id="tape"
+            name="tape"
+            {%
+            if
+            order.tape
+            %}
+            checked
+            {%
+            endif
+            %}
+          />
+
+          <label for="paper">Paper:</label>
+          <input
+            type="checkbox"
+            id="paper"
+            name="paper"
+            {%
+            if
+            order.paper
+            %}
+            checked
+            {%
+            endif
+            %}
+          />
+
+          <label for="gdrp">GDPR:</label>
+          <input
+            type="checkbox"
+            id="gdrp"
+            name="gdrp"
+            {%
+            if
+            order.gdrp
+            %}
+            checked
+            {%
+            endif
+            %}
+          />
+
+          <button
+            type="submit"
+            class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+          >
+            Save
+          </button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+
+    <script>
+      function openModal(modalId) {
+        document.getElementById(modalId).classList.add("open");
+      }
+
+      function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove("open");
+      }
+
+      document.querySelectorAll(".modal .close").forEach((button) => {
+        button.addEventListener("click", function () {
+          const modal = this.closest(".modal");
+          if (modal) {
+            modal.classList.remove("open");
+          }
+        });
+      });
+    </script>
+  </body>
 </html>

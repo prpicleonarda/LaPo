@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, redirect, url_for
+from flask import Blueprint, request, render_template, redirect, url_for, jsonify
 from pony.orm import db_session
 from models import Flower, Order, OrderFlower
 
@@ -23,16 +23,12 @@ def add_flower():
         return redirect('/view_orders')
     return render_template('add_flower.html')
 
- 
-
-
 @bp.route('/flowers/edit/<int:id>', methods=['GET', 'POST'])
 @db_session
 def edit_flower(id):
     flower = Flower.get(id=id)
     if not flower:
         return "Flower not found", 404
-    
 
     if request.method == 'POST':
         flower.name = request.form['name']
@@ -44,7 +40,6 @@ def edit_flower(id):
 
     return render_template('edit_flower.html', flower=flower)
 
-
 @bp.route('/flowers/delete/<int:id>', methods=['POST'])
 @db_session
 def delete_flower(id):
@@ -55,6 +50,38 @@ def delete_flower(id):
     flower.delete()
     return redirect('/view_orders')
 
+@bp.route('/orders/edit/<int:id>', methods=['GET', 'POST'])
+@db_session
+def edit_order(id):
+    order = Order.get(id=id)
+    if not order:
+        return "Order not found", 404
+
+    if request.method == 'POST':
+        order.email = request.form['email']
+        order.phone_number = request.form['phone_number']
+        order.type = request.form['type']
+        order.address = request.form['address']
+        order.time = request.form['time']
+        order.message = request.form['message']
+        order.delivery = request.form.get('delivery') == 'on'
+        order.greenery = request.form.get('greenery') == 'on'
+        order.tape = request.form.get('tape') == 'on'
+        order.paper = request.form.get('paper') == 'on'
+        order.gdrp = request.form.get('gdrp') == 'on'
+        return redirect('/view_orders')
+
+    return render_template('edit_order.html', order=order)
+
+@bp.route('/orders/delete/<int:id>', methods=['POST'])
+@db_session
+def delete_order(id):
+    order = Order.get(id=id)
+    if not order:
+        return "Order not found", 404
+
+    order.delete()
+    return redirect('/view_orders')
 
 @bp.route('/view_orders')
 @db_session
@@ -62,7 +89,6 @@ def view_orders_and_flowers():
     orders = Order.select()[:]
     flowers = Flower.select()[:]
     return render_template('view_orders.html', orders=orders, flowers=flowers)
-
 
 @bp.route('/orders/new', methods=['GET', 'POST'])
 @db_session

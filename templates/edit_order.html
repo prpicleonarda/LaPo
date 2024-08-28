@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Order</title>
+    <link
+      href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-lg">
+      <h1 class="text-2xl font-bold mb-6">Edit Order</h1>
+      <form
+        action="{{ url_for('main.edit_order', id=order.id) }}"
+        method="POST"
+      >
+        <label for="email" class="block mb-2">Email:</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value="{{ order.email }}"
+          class="form-input mb-4"
+          required
+        />
+
+        <label for="phone_number" class="block mb-2">Phone Number:</label>
+        <input
+          type="text"
+          id="phone_number"
+          name="phone_number"
+          value="{{ order.phone_number }}"
+          class="form-input mb-4"
+          required
+        />
+
+        <label for="type" class="block mb-2">Type:</label>
+        <input
+          type="text"
+          id="type"
+          name="type"
+          value="{{ order.type }}"
+          class="form-input mb-4"
+          required
+        />
+
+        <label for="address" class="block mb-2">Address:</label>
+        <input
+          type="text"
+          id="address"
+          name="address"
+          value="{{ order.address }}"
+          class="form-input mb-4"
+          required
+        />
+
+        <label for="time" class="block mb-2">Time:</label>
+        <input
+          type="text"
+          id="time"
+          name="time"
+          value="{{ order.time }}"
+          class="form-input mb-4"
+          required
+        />
+
+        <label for="message" class="block mb-2">Message:</label>
+        <textarea id="message" name="message" class="form-input mb-4">
+{{ order.message }}</textarea
+        >
+
+        <label for="delivery" class="block mb-2">Delivery:</label>
+        <input
+          type="checkbox"
+          id="delivery"
+          name="delivery"
+          {%
+          if
+          order.delivery
+          %}
+          checked
+          {%
+          endif
+          %}
+        />
+
+        <label for="greenery" class="block mb-2">Greenery:</label>
+        <input
+          type="checkbox"
+          id="greenery"
+          name="greenery"
+          {%
+          if
+          order.greenery
+          %}
+          checked
+          {%
+          endif
+          %}
+        />
+
+        <label for="tape" class="block mb-2">Tape:</label>
+        <input
+          type="checkbox"
+          id="tape"
+          name="tape"
+          {%
+          if
+          order.tape
+          %}
+          checked
+          {%
+          endif
+          %}
+        />
+
+        <label for="paper" class="block mb-2">Paper:</label>
+        <input
+          type="checkbox"
+          id="paper"
+          name="paper"
+          {%
+          if
+          order.paper
+          %}
+          checked
+          {%
+          endif
+          %}
+        />
+
+        <label for="gdrp" class="block mb-2">GDPR:</label>
+        <input
+          type="checkbox"
+          id="gdrp"
+          name="gdrp"
+          {%
+          if
+          order.gdrp
+          %}
+          checked
+          {%
+          endif
+          %}
+        />
+
+        <button
+          type="submit"
+          class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+        >
+          Save
+        </button>
+      </form>
+    </div>
+  </body>
+</html>
