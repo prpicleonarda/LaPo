@@ -20,7 +20,7 @@ def add_flower():
         image_link = request.form.get('image_link')
 
         Flower(name=name, color=color, price=price, amount=amount, image_link=image_link)
-        return redirect(url_for('main.view_orders'))
+        return redirect('/view_orders')
     return render_template('add_flower.html')
 
  
@@ -32,6 +32,7 @@ def edit_flower(id):
     flower = Flower.get(id=id)
     if not flower:
         return "Flower not found", 404
+    
 
     if request.method == 'POST':
         flower.name = request.form['name']
@@ -39,7 +40,7 @@ def edit_flower(id):
         flower.price = float(request.form['price'])
         flower.amount = int(request.form['amount'])
         flower.image_link = request.form.get('image_link')
-        return redirect(url_for('main.view_orders'))
+        return redirect('/view_orders')
 
     return render_template('edit_flower.html', flower=flower)
 
@@ -52,14 +53,14 @@ def delete_flower(id):
         return "Flower not found", 404
 
     flower.delete()
-    return redirect(url_for('main.view_orders'))
+    return redirect('/view_orders')
 
 
 @bp.route('/view_orders')
 @db_session
 def view_orders_and_flowers():
-    flowers = Flower.select()
-    orders = Order.select()
+    orders = Order.select()[:]
+    flowers = Flower.select()[:]
     return render_template('view_orders.html', orders=orders, flowers=flowers)
 
 
@@ -99,7 +100,7 @@ def add_order():
                         else:
                             return "Invalid flower ID or quantity exceeds available amount.", 400
 
-                return redirect(url_for('main.view_orders'))
+                return redirect('/view_orders')
 
             except Exception as e:
                 print(f"An error occurred: {e}")
