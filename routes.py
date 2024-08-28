@@ -106,14 +106,16 @@ def add_order():
                 tape = request.form.get('tape') == 'on'
                 paper = request.form.get('paper') == 'on'
                 message = request.form.get('message')
-                address = request.form.get('address')
-                time = request.form.get('time')
+                address = request.form.get('address')  
+                time = request.form.get('datetime')  # 'datetime' instead of 'time'
                 gdrp = request.form.get('gdrp') == 'on'
 
+                # Create the order
                 order = Order(email=email, phone_number=phone_number, type=order_type, delivery=delivery,
                               greenery=greenery, tape=tape, paper=paper, message=message, address=address,
                               time=time, gdrp=gdrp)
 
+                # Handle flowers
                 flower_ids = request.form.getlist('flower_id[]')
                 flower_quantities = request.form.getlist('flower_quantity[]')
 

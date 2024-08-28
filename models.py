@@ -20,7 +20,7 @@ class Order(db.Entity):
     tape = Required(bool)
     paper = Required(bool)
     message = Optional(str)
-    address = Required(str)
+    address = Optional(str)
     time = Required(str)
     gdrp = Required(bool)
     flower_ids = Set('OrderFlower')
