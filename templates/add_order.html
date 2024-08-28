@@ -64,6 +64,12 @@
                 });
             });
         }
+
+        function toggleAddressField() {
+            const deliveryCheckbox = document.getElementById('delivery');
+            const addressField = document.getElementById('address-field');
+            addressField.style.display = deliveryCheckbox.checked ? 'block' : 'none';
+        }
     </script>
 </head>
 <body class="bg-gray-100 flex flex-col min-h-screen"> 
@@ -119,7 +125,7 @@
 
                 <!-- Delivery Checkbox -->
                 <div class="flex items-center">
-                    <input type="checkbox" id="delivery" name="delivery" 
+                    <input type="checkbox" id="delivery" name="delivery" onclick="toggleAddressField()" 
                         class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400">
                     <label for="delivery" class="ml-2 block text-gray-700">Delivery</label>
                 </div>
@@ -153,24 +159,24 @@
                 </div>
 
                 <!-- Address Field -->
-                <div>
+                <div id="address-field" style="display: none;">
                     <label for="address" class="block text-gray-700 font-medium">Address</label>
-                    <input type="text" id="address" name="address" required 
+                    <input type="text" id="address" name="address" 
                         class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
                 </div>
 
-                <!-- Time Field -->
+                <!-- Date and Time Field -->
                 <div>
-                    <label for="time" class="block text-gray-700 font-medium">Time</label>
-                    <input type="text" id="time" name="time" required 
+                    <label for="datetime" class="block text-gray-700 font-medium">Date & Time</label>
+                    <input type="datetime-local" id="datetime" name="datetime" required 
                         class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
                 </div>
 
                 <!-- GDPR Consent Checkbox -->
                 <div class="flex items-center">
-                    <input type="checkbox" id="gdrp" name="gdrp" 
+                    <input type="checkbox" id="gdrp" name="gdrp"  required
                         class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400">
-                    <label for="gdrp" class="ml-2 block text-gray-700">GDPR Consent</label>
+                    <label for="gdrp" class="ml-2 block text-gray-700"  >GDPR Consent</label>
                 </div>
 
                 <!-- Flowers Selection -->
@@ -206,11 +212,6 @@
                     </button>
                 </div>
             </form>
-
-            <div class="mt-6 text-center">
-                <a href="/view_orders" 
-                class="text-blue-500 hover:text-blue-700 focus:outline-none">Back to Orders List</a>
-            </div>
         </div>
     </div>
 

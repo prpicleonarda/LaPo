@@ -13,7 +13,7 @@ def index():
 @db_session
 def add_flower():
     if request.method == 'POST':
-        name = request.form['name']
+        name = request.form['flower_type']
         color = request.form['color']
         price = float(request.form['price'])
         amount = int(request.form['amount'])
@@ -31,7 +31,7 @@ def edit_flower(id):
         return "Flower not found", 404
 
     if request.method == 'POST':
-        flower.name = request.form['name']
+        flower.name = request.form['flower_type']
         flower.color = request.form['color']
         flower.price = float(request.form['price'])
         flower.amount = int(request.form['amount'])
